@@ -142,8 +142,8 @@ On branch master
 Changes to be committed:
   (use "git reset HEAD <file>..." to unstage)
 
-      renamed:    README.md -> README
-          modified:   CONTRIBUTING.md
+  renamed:    README.md -> README
+  modified:   CONTRIBUTING.md
 ```
 
 Right below the “Changes to be committed” text, it says use git reset HEAD <file>... to unstage. So, let’s use that advice to unstage the CONTRIBUTING.md file:
@@ -157,13 +157,13 @@ On branch master
 Changes to be committed:
   (use "git reset HEAD <file>..." to unstage)
 
-      renamed:    README.md -> README
+   renamed:    README.md -> README
 
-      Changes not staged for commit:
-        (use "git add <file>..." to update what will be committed)
-	  (use "git checkout -- <file>..." to discard changes in working directory)
+   Changes not staged for commit:
+   (use "git add <file>..." to update what will be committed)
+   (use "git checkout -- <file>..." to discard changes in working directory)
 
-	      modified:   CONTRIBUTING.md
+     modified:   CONTRIBUTING.md
 ```
 
 ## Git tagging
@@ -232,7 +232,7 @@ Writing objects: 100% (1/1), 160 bytes | 0 bytes/s, done.
 Total 1 (delta 0), reused 0 (delta 0)
 To git@github.com:schacon/simplegit.git
  * [new tag]         v1.4 -> v1.4
-  * [new tag]         v1.4-lw -> v1.4-lw
+ * [new tag]         v1.4-lw -> v1.4-lw
 ```
 
 ### Deleting tags
@@ -247,4 +247,75 @@ remote:
 ```
 $ git push origin --delete <tagname>
 ```
+## Git Aliases
 
+Git doesn’t automatically infer your command if you type it in partially. If you don’t want to type the entire text of each of the Git commands, you can easily set up an alias for each command using `git config`. Here are a couple of examples you may want to set up:
+
+```
+$ git config --global alias.co checkout
+$ git config --global alias.br branch
+$ git config --global alias.ci commit
+$ git config --global alias.st status
+```
+
+This means that, for example, instead of typing `git commit`, you just need to type `git ci`. As you go on using Git, you’ll probably use other commands frequently as well; don’t hesitate to create new aliases.
+
+This technique can also be very useful in creating commands that you think should exist. For example, to correct the usability problem you encountered with unstaging a file, you can add your own unstage alias to Git:
+
+```
+$ git config --global alias.unstage 'reset HEAD --'
+```
+This makes the following two commands equivalent:
+```
+$ git unstage fileA
+$ git reset HEAD -- fileA
+```
+
+## Branch managment
+
+To see the last commit on each branch, you can run `git branch -v`:
+
+```
+$ git branch -v
+  iss53   93b412c Fix javascript issue
+* master  7a98805 Merge branch 'iss53'
+  testing 782fd34 Add scott to the author list in the readme
+```
+The useful `--merged` and `--no-merged` options can filter this list to branches that you have or have not yet merged into the branch you’re currently on. To see which branches are already merged into the branch you’re on, you can run `git branch --merged`:
+
+```
+$ git branch --merged
+  iss53
+* master
+```
+
+To see all the branches that contain work you haven’t yet merged in, you can run `git branch --no-merged`:
+```
+$ git branch --no-merged
+  testing
+```
+### Changing a branch name
+
+```
+$ git branch --move bad-branch-name corrected-branch-name
+```
+
+This replaces your bad-branch-name with corrected-branch-name, but this change is only local for now. To let others see the corrected branch on the remote, push it:
+
+```
+$ git push --set-upstream origin corrected-branch-name
+```
+Now we'll take a brief look at where we are now:
+```
+$ git branch --all
+* corrected-branch-name
+  main
+  remotes/origin/bad-branch-name
+  remotes/origin/corrected-branch-name
+  remotes/origin/main
+```
+Notice that you’re on the branch corrected-branch-name and it’s available on the remote. However, the branch with the bad name is also still present there but you can delete it by executing the following command:
+
+```
+$ git push origin --delete bad-branch-name
+```
